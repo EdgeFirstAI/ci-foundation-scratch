@@ -2,6 +2,5 @@
 
 Throwaway crate that proves EdgeFirstAI shared CI (`EDGEAI-1553` / T0).
 
-Callers pin `EdgeFirstAI/.github` at `f7c16cba` until the checkout-fix PR
-merges; then pin the merged SHA (`v1.0.0` workflow tree was `ca1dd55` but
-cannot fetch composites).
+Callers pin `EdgeFirstAI/.github` at `22209a4a84fba9ffe1abec06df9ee43bf163561b`
+and pass the same value as `shared-sha`.
