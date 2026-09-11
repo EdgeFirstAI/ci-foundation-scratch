@@ -1,0 +1,14 @@
+# Proof caller — pin uses: to the same EdgeFirstAI/.github commit as ci.yml.
+
+name: Tag Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  tag:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    uses: EdgeFirstAI/.github/.github/workflows/tag-release.yml@2c47ac832e402d573aba404df1013a6b2876dc46
+    secrets: inherit
