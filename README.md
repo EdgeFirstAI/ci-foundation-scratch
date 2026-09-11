@@ -2,5 +2,5 @@
 
 Throwaway crate that proves EdgeFirstAI shared CI (`EDGEAI-1553` / T0).
 
-Callers pin `EdgeFirstAI/.github` at `4bad676a9cd5296af76a7c7d976ef0405e72ff8d`
+Callers pin `EdgeFirstAI/.github` at `998cd91df11e51eccaea8baaae9208cfa2ea5dcb`
 and pass the same value as `shared-sha`.
