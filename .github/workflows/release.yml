@@ -17,10 +17,10 @@ permissions:
 
 jobs:
   release:
-    uses: EdgeFirstAI/.github/.github/workflows/release-rust.yml@2c47ac832e402d573aba404df1013a6b2876dc46
+    uses: EdgeFirstAI/.github/.github/workflows/release-rust.yml@a2c8700493c160453bc789ffcf18cbe784e8aff1
     with:
       dry-run: true
       publish-crates: false
       build-wheels: false
-      shared-sha: 2c47ac832e402d573aba404df1013a6b2876dc46
+      shared-sha: a2c8700493c160453bc789ffcf18cbe784e8aff1
     secrets: inherit

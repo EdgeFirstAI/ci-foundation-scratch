@@ -2,7 +2,7 @@
 
 Throwaway crate that proves EdgeFirstAI shared CI (`EDGEAI-1553` / T0).
 
-Callers pin `EdgeFirstAI/.github` at `2c47ac832e402d573aba404df1013a6b2876dc46`
+Callers pin `EdgeFirstAI/.github` at `a2c8700493c160453bc789ffcf18cbe784e8aff1`
 and pass the same value as `shared-sha`.
 
 `tag-release.yml` and `release.yml` are also pinned there. The release job is

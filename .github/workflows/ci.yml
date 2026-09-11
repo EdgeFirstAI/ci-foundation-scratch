@@ -76,16 +76,16 @@ jobs:
   quick:
     needs: changes
     if: needs.changes.outputs.code == 'true'
-    uses: EdgeFirstAI/.github/.github/workflows/rust-quick.yml@2c47ac832e402d573aba404df1013a6b2876dc46
+    uses: EdgeFirstAI/.github/.github/workflows/rust-quick.yml@a2c8700493c160453bc789ffcf18cbe784e8aff1
     with:
       python: false
       skip-cross-clippy: true
-      shared-sha: 2c47ac832e402d573aba404df1013a6b2876dc46
+      shared-sha: a2c8700493c160453bc789ffcf18cbe784e8aff1
 
   full:
     needs: changes
     if: needs.changes.outputs.full == 'true' || needs.changes.outputs.hardware == 'true'
-    uses: EdgeFirstAI/.github/.github/workflows/rust-full.yml@2c47ac832e402d573aba404df1013a6b2876dc46
+    uses: EdgeFirstAI/.github/.github/workflows/rust-full.yml@a2c8700493c160453bc789ffcf18cbe784e8aff1
     with:
       lanes: ${{ needs.changes.outputs.full == 'true' && 'host' || 'hardware' }}
       boards: ""
@@ -94,7 +94,7 @@ jobs:
       sonar: false
       scancode: true
       runner-class-linux: hosted
-      shared-sha: 2c47ac832e402d573aba404df1013a6b2876dc46
+      shared-sha: a2c8700493c160453bc789ffcf18cbe784e8aff1
     secrets: inherit
 
   ci-gate:
