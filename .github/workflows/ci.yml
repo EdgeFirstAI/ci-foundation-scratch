@@ -76,7 +76,7 @@ jobs:
   quick:
     needs: changes
     if: needs.changes.outputs.code == 'true'
-    uses: EdgeFirstAI/.github/.github/workflows/rust-quick.yml@ca1dd553f352cbdf0d80c0abe2d52237c6964f25  # v1.0.0
+    uses: EdgeFirstAI/.github/.github/workflows/rust-quick.yml@f7c16cbad84e6695969bff5c43ebc3f3d61494c5  # EDGEAI-1553 checkout fix (unreleased)
     with:
       python: false
       skip-cross-clippy: true
@@ -84,7 +84,7 @@ jobs:
   full:
     needs: changes
     if: needs.changes.outputs.full == 'true' || needs.changes.outputs.hardware == 'true'
-    uses: EdgeFirstAI/.github/.github/workflows/rust-full.yml@ca1dd553f352cbdf0d80c0abe2d52237c6964f25  # v1.0.0
+    uses: EdgeFirstAI/.github/.github/workflows/rust-full.yml@f7c16cbad84e6695969bff5c43ebc3f3d61494c5  # EDGEAI-1553 checkout fix (unreleased)
     with:
       lanes: ${{ needs.changes.outputs.full == 'true' && 'host' || 'hardware' }}
       boards: ""
