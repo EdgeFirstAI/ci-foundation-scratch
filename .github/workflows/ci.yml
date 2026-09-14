@@ -13,9 +13,6 @@ on:
       full:
         type: boolean
         default: false
-      hardware:
-        type: boolean
-        default: false
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
@@ -33,7 +30,6 @@ jobs:
     outputs:
       code: ${{ steps.f.outputs.code }}
       full: ${{ steps.mode.outputs.full }}
-      hardware: ${{ steps.mode.outputs.hardware }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d  # v4.0.3
@@ -51,27 +47,20 @@ jobs:
           EVENT_ACTION: ${{ github.event.action }}
           LABEL_NAME: ${{ github.event.label.name }}
           DISPATCH_FULL: ${{ inputs.full }}
-          DISPATCH_HARDWARE: ${{ inputs.hardware }}
         run: |
           full=false
-          hardware=false
           case "$EVENT_NAME" in
             merge_group) full=true ;;
             workflow_dispatch)
               full="$DISPATCH_FULL"
-              hardware="$DISPATCH_HARDWARE"
               ;;
             pull_request)
-              if [[ "$EVENT_ACTION" == labeled ]]; then
-                case "$LABEL_NAME" in
-                  ci:full) full=true ;;
-                  ci:hardware) hardware=true ;;
-                esac
+              if [[ "$EVENT_ACTION" == labeled && "$LABEL_NAME" == ci:full ]]; then
+                full=true
               fi
               ;;
           esac
           echo "full=$full" >> "$GITHUB_OUTPUT"
-          echo "hardware=$hardware" >> "$GITHUB_OUTPUT"
 
   quick:
     needs: changes
@@ -84,10 +73,10 @@ jobs:
 
   full:
     needs: changes
-    if: needs.changes.outputs.full == 'true' || needs.changes.outputs.hardware == 'true'
+    if: needs.changes.outputs.full == 'true'
     uses: EdgeFirstAI/.github/.github/workflows/rust-full.yml@a2c8700493c160453bc789ffcf18cbe784e8aff1
     with:
-      lanes: ${{ needs.changes.outputs.full == 'true' && 'host' || 'hardware' }}
+      lanes: host
       boards: ""
       skip-macos: true
       skip-windows: true
