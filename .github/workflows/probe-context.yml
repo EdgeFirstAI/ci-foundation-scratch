@@ -1,0 +1,10 @@
+# Temporary caller for the EDGEAI-1554 job-context probe.
+
+name: Probe Context
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    uses: EdgeFirstAI/.github/.github/workflows/_probe-context.yml@2b3462b06100d4f6341eee3052c21be9355ee8ef
