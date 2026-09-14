@@ -4,6 +4,8 @@ name: Probe Context
 
 on:
   workflow_dispatch:
+  push:
+    branches: [feature/EDGEAI-1553-proof]
 
 jobs:
   probe:
