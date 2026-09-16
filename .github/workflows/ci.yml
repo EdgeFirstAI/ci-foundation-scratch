@@ -1,0 +1,98 @@
+# Proof caller — pin uses: and shared-sha to the same EdgeFirstAI/.github commit.
+
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, labeled]
+  merge_group:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      full:
+        type: boolean
+        default: false
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  changes:
+    if: github.event.pull_request.draft != true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.f.outputs.code }}
+      full: ${{ steps.mode.outputs.full }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d  # v4.0.3
+        id: f
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - 'tests/**'
+              - 'Cargo.*'
+              - '.github/**'
+      - id: mode
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action }}
+          LABEL_NAME: ${{ github.event.label.name }}
+          DISPATCH_FULL: ${{ inputs.full }}
+        run: |
+          full=false
+          case "$EVENT_NAME" in
+            merge_group) full=true ;;
+            workflow_dispatch)
+              full="$DISPATCH_FULL"
+              ;;
+            pull_request)
+              if [[ "$EVENT_ACTION" == labeled && "$LABEL_NAME" == ci:full ]]; then
+                full=true
+              fi
+              ;;
+          esac
+          echo "full=$full" >> "$GITHUB_OUTPUT"
+
+  quick:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    uses: EdgeFirstAI/.github/.github/workflows/rust-quick.yml@a2c8700493c160453bc789ffcf18cbe784e8aff1
+    with:
+      python: false
+      skip-cross-clippy: true
+      shared-sha: a2c8700493c160453bc789ffcf18cbe784e8aff1
+
+  full:
+    needs: changes
+    if: needs.changes.outputs.full == 'true'
+    uses: EdgeFirstAI/.github/.github/workflows/rust-full.yml@a2c8700493c160453bc789ffcf18cbe784e8aff1
+    with:
+      lanes: host
+      boards: ""
+      skip-macos: true
+      skip-windows: true
+      sonar: false
+      scancode: true
+      runner-class-linux: hosted
+      shared-sha: a2c8700493c160453bc789ffcf18cbe784e8aff1
+    secrets: inherit
+
+  ci-gate:
+    if: always()
+    needs: [changes, quick, full]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          echo "$RESULTS" | jq -e 'to_entries | all(.value.result == "success" or .value.result == "skipped")'

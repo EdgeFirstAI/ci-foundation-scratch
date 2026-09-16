@@ -1,0 +1,26 @@
+# Proof caller — dry-run only. Pin uses: and shared-sha to the same commit.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    uses: EdgeFirstAI/.github/.github/workflows/release-rust.yml@a2c8700493c160453bc789ffcf18cbe784e8aff1
+    with:
+      dry-run: true
+      publish-crates: false
+      build-wheels: false
+      shared-sha: a2c8700493c160453bc789ffcf18cbe784e8aff1
+    secrets: inherit

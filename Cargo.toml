@@ -1,0 +1,9 @@
+[package]
+name = "ci-foundation-scratch"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+publish = false
+description = "Proof crate for EdgeFirstAI shared reusable workflows"
+
+[dependencies]
